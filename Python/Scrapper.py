@@ -3,16 +3,21 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 import time
 import sys
 
 class Scrapper:
     def __init__(self):
-        # self.username = username
-        # self.password = password
         self.SemesterLabels = []
+        self.SemestersData = []
         self.token = "0"
         self.driver = webdriver.Chrome()
+        # self.driver.set_network_conditions(
+        # offline=False,
+        # latency=5,  # additional latency (ms)
+        # download_throughput=250 * 1024,  # maximal throughput
+        # upload_throughput=250 * 1024)  # maximal throughput
         self.driver.get("https://portal.aaup.edu/faces/ui/login.xhtml")
 
     def Login(self, username, password):
@@ -21,7 +26,13 @@ class Scrapper:
         UsernameBar.send_keys(username) #sending the name
         PasswordBar.send_keys(password) #sending the pass
         self.driver.find_element_by_xpath("/html/body/div[1]/form/div/div/div[5]/button/span[2]").click() #logging in
-
+        try:
+            WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.CLASS_NAME, "ui-growl-item")))
+            print("Failed")
+            self.driver.quit()
+            sys.exit()
+        except TimeoutException:
+            print("Succedeed")
     def GetToken(self): #getting the user's token
         #getting the url which has the token in it at the end vvvvv
         href = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "menu-form:j_idt69"))).find_element_by_tag_name("a").get_attribute("href")
@@ -37,14 +48,11 @@ class Scrapper:
         SemestersLi = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents:semesters_items"]'))).find_elements_by_tag_name("li")
         for li in SemestersLi[1:]: #loops in the options + excluding the first useless option
             self.SemesterLabels.append(li.get_attribute("innerHTML"))
-        print(self.SemesterLabels)
 
     def GetInfoFromSemesterTable():
         pass
         
-    
-    def __del__(self): # runs when object gets deleted and closes the driver
-        self.driver.close()
+
 
 
 if __name__=='__main__':
@@ -62,5 +70,5 @@ if __name__=='__main__':
     print("[+] Navigated into Scheduals")
     scrapper.GetSemestersLabels()
     print("[+] Got the semesters of your Scheduals")
+    scrapper.GetInfoFromSemesterTable()
     input("Press Enter to continue...")
-    del scrapper
