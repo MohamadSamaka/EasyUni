@@ -10,6 +10,7 @@ import pprint
 
 class Scrapper:
     def __init__(self):
+        # self.TF = TasksFile
         self.SemesterLabels = []
         self.SemestersData = []
         self.token = "0"
@@ -24,6 +25,8 @@ class Scrapper:
 
 
     def Login(self, username, password):
+        # print("[$] Login")
+        # CloseOpenedFle(self.TF)
         UsernameBar = self.driver.find_element_by_id("lognForm:j_idt17") #getting user's bar
         PasswordBar = self.driver.find_element_by_id("lognForm:j_idt21") #getting password's bar
         UsernameBar.send_keys(username) #sending the name
@@ -31,11 +34,12 @@ class Scrapper:
         self.driver.find_element_by_xpath("/html/body/div[1]/form/div/div/div[5]/button/span[2]").click() #logging in
         try:
             WebDriverWait(self.driver, 4).until(EC.visibility_of_element_located((By.CLASS_NAME, "ui-growl-item")))
-            print("Failed")
+            print("[-] Failed", flush = True)
             self.driver.quit()
             sys.exit()
         except TimeoutException:
-            print("Succedeed")
+            print("[+] Succedeed", flush = True)
+        # CloseOpenedFle(self.TF)
 
 
     def GetToken(self): #getting the user's token
@@ -77,21 +81,18 @@ class Scrapper:
         
 
 if __name__=='__main__':
-    '''
-    # scrapper = Scrapper(sys.argv[1] , sys.argv[2]) i get the name and the password here but
-                                            i commented it cuz im still working on it, simply saving time
-    '''
     scrapper = Scrapper()
-    scrapper.Login("****" , "****") #calling the login function
+    scrapper.Login(sys.argv[1] , sys.argv[2]) #calling the login function
     #btw these prints that you gonna see next are nothing but just to give simple info i will remove them later
-    print("[+] You Have Been Loged Successfully")
+    print("[+] You Have Been Loged Successfully", flush = True)
     scrapper.GetToken()
-    print("[+] Token has been obtained!")
+    print("[+] Token has been obtained!", flush = True)
     scrapper.NavigateToScheduale()
-    print("[+] Navigated into Scheduals")
+    print("[+] Navigated into Scheduals", flush = True)
     scrapper.GetSemestersLabels()
-    print("[+] Got the semesters of your Scheduals")
+    print("[+] Got the semesters of your Scheduals", flush = True)
     scrapper.GetInfoFromSemesterTable()
-    print("[+] Got the data of each one of your scheduals")
+    print("[+] Got the data of each one of your scheduals", flush = True)
+    # scrapper.driver.get("http://localhost:4000/WebSite/index.php")
     # input("Press Enter to continue...") #for testing no more
     scrapper.driver.quit()
