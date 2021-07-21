@@ -1,0 +1,8 @@
+#slider{
+    position:fixed;
+    z-index: 22;
+    background:green;
+    height:100%;
+    width:100%;
+    /* display:block; */
+}
