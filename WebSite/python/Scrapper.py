@@ -13,18 +13,22 @@ def Report(R):
 
 class Scrapper:
     def __init__(self):
-        # self.TF = TasksFile
         self.SemesterLabels = []
         self.SemestersData = []
         self.token = "0"
         self.driver = webdriver.Chrome()
         #limiting the network speed to check if it works for slow internet users vvvvvvv
-        # self.driver.set_network_conditions(
-        # offline=False,
-        # latency=5,  # additional latency (ms)
-        # download_throughput=100 * 1024,  # maximal throughput
-        # upload_throughput=100 * 1024)  # maximal throughput
-        self.driver.get("https://portal.aaup.edu/faces/ui/login.xhtml")
+        self.driver.set_network_conditions(
+        offline=True,
+        latency=5,  # additional latency (ms)
+        download_throughput=100 * 1024,  # maximal throughput
+        upload_throughput=100 * 1024)  # maximal throughput
+        try:
+            self.driver.get("https://portal.aaup.edu/faces/ui/login.xhtml")
+        except:
+            Report("|-|")
+            self.driver.quit()
+            sys.exit()
 
 
     def Login(self, username, password):
@@ -33,13 +37,13 @@ class Scrapper:
         UsernameBar.send_keys(username) #sending the name
         PasswordBar.send_keys(password) #sending the pass
         self.driver.find_element_by_xpath("/html/body/div[1]/form/div/div/div[5]/button/span[2]").click() #logging in
-        try:
+        try: #catches an error which triggered due error in connection
             WebDriverWait(self.driver, 1).until(EC.visibility_of_element_located((By.CLASS_NAME, "ui-growl-item")))
             Report("|-|")
             self.driver.quit()
             sys.exit()
         except TimeoutException:
-            Report("|+|")
+            pass
 
 
     def GetToken(self): #getting the user's token
@@ -87,28 +91,24 @@ class Scrapper:
 
 
 if __name__=='__main__':
+    #the next "reports" get's written to file when running the script on background
+    #these logs gonnab be useful when errors occure, and getting info to the site abotu current situation
+    Report("$Connecting...")
     scrapper = Scrapper()
+    Report("|+|")
     Report("$Trying to log in...")
     scrapper.Login(sys.argv[1] , sys.argv[2])
-    #btw these prints that you gonna see next are nothing but just to give simple info i will remove them later
-    # time.sleep(0.2)
+    Report("|+|")
     Report("$Trying to get the token...")
     scrapper.GetToken()
     Report("|+|") #Token has been obtained!
-    # time.sleep(0.2)
     Report("$Navigating to schedules page...")
     scrapper.NavigateToScheduale()
     Report("|+|") #Navigated into Scheduals
-    # time.sleep(0.2)
     Report("$Getting the semesters...")
     scrapper.GetSemestersLabels()
     Report("|+|") #Got the semesters of your Scheduals
-    # time.sleep(0.2)
-    # Report("$Collecting data...")
     scrapper.GetInfoFromSemesterTable()
     Report("|+|") #Got the data of each one of your scheduals
-    # time.sleep(0.2)
-    # scrapper.driver.get("http://localhost:4000/WebSite/index.php")
-    # input("Press Enter to continue...") #for testing no more
     Report("DONE")
     scrapper.driver.quit()
