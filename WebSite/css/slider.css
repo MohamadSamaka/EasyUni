@@ -1,8 +1,80 @@
-#slider{
-    position:fixed;
-    z-index: 22;
-    background:green;
-    height:100%;
+
+
+body::before{
+    content: '';
+    z-index: 1;
+    position:absolute;
     width:100%;
-    /* display:block; */
+    background:#1c2020;
 }
+
+
+body::after{
+    content: '';
+    position:absolute;
+    bottom: 0;
+    display:block;
+    width:100%;
+    background:#1c2020;
+}
+
+.enable-slider::before{
+    animation: slide-in 0.5s ease-in-out 0.3s forwards;
+}
+
+.enable-slider::after{
+    animation: slide-in 0.5s ease-in-out 0.3s forwards;
+}
+
+@keyframes slide-in {
+    from{height:0}
+    to{height:50%}
+}
+
+
+@keyframes slide-out {
+    from{height:0}
+    to{height:50%}
+}
+
+
+/* 
+@keyframes slider {
+    10%{transform: scale(1, 0.002)}
+    35%{
+        transform: scale(0.2, 0.002) 
+        opacity 1
+    }
+    50%{
+        transform: scale(0.2, 0.002)
+		opacity 0
+    }
+    85%{
+        transform: scale(1, 0.002)
+		opacity 1
+    }
+    100%{
+        transform: scale(1, 1)
+		opacity 1
+    }
+} */
+
+/* @keyframes slider {
+    10%{transform: scale(1, 0.002)}
+    50%{
+        transform: scale(0.2, 0.002) 
+        opacity 1
+    }
+    100%{
+        transform: scale(0.2, 0.002)
+		opacity 0
+} */
+
+
+/* #slider:after{
+    content: '';
+    position:absolute;
+    height:50%;
+    width:50%;
+    background:pink;
+} */
