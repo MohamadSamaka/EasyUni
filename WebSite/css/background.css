@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
-*,:before, :after  {
+*{
 	margin: 0;
 	padding: 0;
 	outline: none;
@@ -8,6 +8,8 @@
 }
 
 .animation-area {
+	position:relative;
+	z-index: -1;
 	/* background: linear-gradient(to left, #8942a8, #ba382f); */
     background: linear-gradient(to left, #F2AF29, #ba382f);
 	width: 100%;
@@ -21,6 +23,11 @@
 	height: 100%;
 	overflow: hidden;
 }
+
+.box-disable{
+	display: none;
+}
+
 .box-area li {
 	position: absolute;
 	display: block;
@@ -28,7 +35,7 @@
 	width: 25px;
 	height: 25px;
 	background: rgba(255, 255, 255, 0.2);
-	animation: animate 20s linear infinite;
+	animation: animate-boxes 20s linear infinite;
 	bottom: -150px;
 }
 .box-area li:nth-child(1) {
@@ -69,7 +76,7 @@
 	height: 110px;
 	animation-delay: 3.5s;
 }
-@keyframes animate {
+@keyframes animate-boxes {
 	0% {
 		transform: translateY(0) rotate(0deg);
 		opacity: 1;
