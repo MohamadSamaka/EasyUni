@@ -16,7 +16,8 @@ class Scrapper:
         self.SemesterLabels = []
         self.SemestersData = []
         self.token = "0"
-        self.driver = webdriver.Chrome()
+        #self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome("Attachments\chromedriver.exe")#moved to windows this  is needed to work
         #limiting the network speed to check if it works for slow internet users vvvvvvv
         self.driver.set_network_conditions(
         offline=True,
