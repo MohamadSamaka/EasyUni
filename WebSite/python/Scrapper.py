@@ -41,8 +41,10 @@ class Scrapper:
 
 
     def Login(self, username, password):
-        UsernameBar = self.driver.find_element_by_id("lognForm:j_idt17") #getting user's bar
-        PasswordBar = self.driver.find_element_by_id("lognForm:j_idt21") #getting password's bar
+        #getting the 2 inputs container, this way i won't have an error if they changed the id
+        UserAndPassContainer = self.driver.find_elements_by_class_name("md-inputfield")
+        UsernameBar = UserAndPassContainer[0].find_element_by_tag_name("input") #getting user's bar
+        PasswordBar = UserAndPassContainer[1].find_element_by_tag_name("input") #getting password's bar
         UsernameBar.send_keys(username) #sending the name
         PasswordBar.send_keys(password) #sending the pass
         self.driver.find_element_by_xpath("/html/body/div[1]/form/div/div/div[5]/button/span[2]").click() #logging in
@@ -84,7 +86,7 @@ class Scrapper:
                 WebDriverWait(self.driver, 3).until(EC.invisibility_of_element_located((By.CLASS_NAME, "j_idt323_modal")))
                 time.sleep(1) #sleeps to let the rows load 100%
                 #extracts the rows of data
-                SemesterDataRows = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.ID, "contents:j_idt270_data"))).find_elements_by_tag_name("tr")
+                SemesterDataRows = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/form/div/div/div[2]/div/div/div[1]/div[2]/table/tbody"))).find_elements_by_tag_name("tr")
                 for PieceOfData in SemesterDataRows: #loops through these rows
                     TempSemesterData = []
                     for RawDataContainer in PieceOfData.find_elements_by_tag_name("td")[:-2]:#loops through these pieces of data but ignores the last 2
