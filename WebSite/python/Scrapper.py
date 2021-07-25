@@ -1,4 +1,6 @@
 from selenium import webdriver
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -7,6 +9,7 @@ from selenium.common.exceptions import TimeoutException,StaleElementReferenceExc
 import time
 import sys
 import pprint
+import platform
 
 def Report(R):
     print(R, end = "", flush = True)
@@ -16,14 +19,20 @@ class Scrapper:
         self.SemesterLabels = []
         self.SemestersData = []
         self.token = "0"
+        options = Options()
+        options.add_argument("--remote-debugging-port=9222")
+        self.driver = None
         #self.driver = webdriver.Chrome()
-        self.driver = webdriver.Chrome("Attachments\chromedriver.exe")#moved to windows this  is needed to work
+        if platform.system() == "Windows":
+            self.driver = webdriver.Chrome("..\..\Attachments\chromedriver.exe", options=options)#moved to windows this  is needed to work
+        else:
+            self.driver = webdriver.Chrome("../../Attachments/chromedriver", options=options)
         #limiting the network speed to check if it works for slow internet users vvvvvvv
-        self.driver.set_network_conditions(
-        offline=True,
-        latency=5,  # additional latency (ms)
-        download_throughput=100 * 1024,  # maximal throughput
-        upload_throughput=100 * 1024)  # maximal throughput
+        # self.driver.set_network_conditions(
+        # offline=False,
+        # latency=5,  # additional latency (ms)
+        # download_throughput=100 * 1024,  # maximal throughput
+        # upload_throughput=100 * 1024)  # maximal throughput
         try:
             self.driver.get("https://portal.aaup.edu/faces/ui/login.xhtml")
         except:
