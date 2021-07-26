@@ -6,6 +6,4 @@
     else
         system('python3 ../python/Scrapper.py '.$_GET['user']. ' '. $_GET["pass"].
         ' > '.$Fname);
-    require('login.php');
-    login($Fname);
 ?>
