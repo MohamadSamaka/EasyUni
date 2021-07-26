@@ -9,7 +9,7 @@ function Login(e){
     e.preventDefault();
     var user = document.querySelector("#user").value;
     var pass = document.querySelector("#pass").value;
-    var prams = "user="+user+"&pass="+pass
+    var prams = "user="+user+"&pass="+pass+"&limit=2"
     Body.classList.add("enable-slider");
     var xhr = new XMLHttpRequest();
     xhr.open("POST","Main.php", true);
