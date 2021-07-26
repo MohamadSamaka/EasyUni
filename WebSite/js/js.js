@@ -11,7 +11,7 @@ function Login(e){
     var pass = document.querySelector("#pass").value;
     Body.classList.add("enable-slider");
     var xhr = new XMLHttpRequest();
-    xhr.open("GET","ScriptExecutor.php?user="+user+"&pass="+pass, true);
+    xhr.open("GET","Main.php?user="+user+"&pass="+pass, true);
     xhr.onload=function(){
         console.log(this.responseText);
     }
