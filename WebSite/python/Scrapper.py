@@ -104,21 +104,22 @@ class Scrapper:
 if __name__=='__main__':
     #the next "reports" get's written to file when running the script on background
     #these logs gonnab be useful when errors occure, and getting info to the site abotu current situation
-    Report("$Connecting...")
+    Report("$Connecting")
     scrapper = Scrapper()
     Report("|+|")
-    Report("$Trying to log in...")
+    Report("$Logging in")
     scrapper.Login(sys.argv[1] , sys.argv[2])
     Report("|+|")
-    Report("$Trying to get the token...")
+    Report("$Finding the token")
     scrapper.GetToken()
     Report("|+|") #Token has been obtained!
-    Report("$Navigating to schedules page...")
+    Report("$Navigating to schedules page")
     scrapper.NavigateToScheduale()
     Report("|+|") #Navigated into Scheduals
-    Report("$Getting the semesters...")
+    Report("$Finding the semesters")
     scrapper.GetSemestersLabels()
     Report("|+|") #Got the semesters of your Scheduals
+    Report("$Collecting the data")
     scrapper.GetInfoFromSemesterTable()
     Report("|+|") #Got the data of each one of your scheduals
     Report("DONE")
