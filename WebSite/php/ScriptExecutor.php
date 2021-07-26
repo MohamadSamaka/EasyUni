@@ -5,6 +5,6 @@
         system('python3 ../python/Scrapper.py '.$_POST['user']. ' '. $_POST["pass"].
         ' > '.$Fname. ' 2>&1 &');
     else
-        system('python3 ../python/Scrapper.py '.$_POST['user']. ' '. $_POST["pass"].
-        ' > '.$Fname);
+        pclose(popen('start /B python3 ../python/Scrapper.py '.$_POST['user']. ' '. $_POST["pass"].
+        ' > '.$Fname, "r"));
 ?>
