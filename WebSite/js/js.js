@@ -9,11 +9,13 @@ function Login(e){
     e.preventDefault();
     var user = document.querySelector("#user").value;
     var pass = document.querySelector("#pass").value;
+    var prams = "user="+user+"&pass="+pass
     Body.classList.add("enable-slider");
     var xhr = new XMLHttpRequest();
-    xhr.open("GET","Main.php?user="+user+"&pass="+pass, true);
+    xhr.open("POST","Main.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onload=function(){
         console.log(this.responseText);
     }
-    xhr.send();
+    xhr.send(prams);
 }
