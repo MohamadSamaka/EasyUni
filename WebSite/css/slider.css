@@ -1,6 +1,7 @@
 
 
 body::before{
+    height: 0%;
     content: '';
     z-index: 1;
     position:absolute;
@@ -10,6 +11,7 @@ body::before{
 
 
 body::after{
+    height: 0%;
     content: '';
     position:absolute;
     bottom: 0;
@@ -26,6 +28,17 @@ body::after{
     animation: slide-in 0.5s ease-in-out 0.3s forwards;
 }
 
+.disable-slider::before{
+    height: 50%;
+    animation: slide-out 0.5s ease-in-out 0.3s forwards;
+}
+
+.disable-slider::after{
+    height: 50%;
+    animation: slide-out 0.5s ease-in-out 0.3s forwards;
+}
+
+
 @keyframes slide-in {
     from{height:0}
     to{height:50%}
@@ -33,6 +46,20 @@ body::after{
 
 
 @keyframes slide-out {
-    from{height:0}
-    to{height:50%}
+    from{height:50%}
+    to{height:0%}
+}
+
+#report{
+    position: relative;
+    z-index: 1;
+    color: whitesmoke;
+     height:100vh;
+     display: none;
+}
+#report p{
+    position: absolute;  
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
