@@ -36,31 +36,23 @@
         position:absolute;
         margin-top: 140px;
     }
+
+  /* #error{
+    position: absolute;
+    display: block;
+    width:max-content;
+    margin-top: 10%;
+    margin-left: 400px;
+    color:white;
+    background-color: #000000;
+    padding: 10px;
+    border-radius: 5px;
+  } */
     
-    
-    /* #submit{
-        border:none;
-        margin-top: 200px;
-        position:relative;
-    } */
-
-
-  /* #submit {
-      margin-top: 150px;
-      position:relative;
-      border:none;
-      display: block;
-      margin: 200px auto;
-      padding: 10px 40px;
-    } 
-
-    #sumbit:hover{
-
-    } */
 
     #submit{
       margin-top: 150px;
-      position:relative;
+      position:absolute;
       border:none;
       display: block;
       margin: 200px auto;
