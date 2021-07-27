@@ -1,22 +1,34 @@
 <?php
-    #loops the number of times of process and cheks each process
-    #the i var stands for the number of processes
-    #the j var stands for the start head index
-    for($i = 0, $j = 2; $i < $Limit; $i++, $j+=2){
-        $r = Process($Fname, $j, $j - 2);
-        Report($r, $i);
-        if($r)
-            die;
+    require('Processes.php');
+?>
+
+<?php
+    $CheckId;
+    $Fname = "Output.text";
+    if(isset($_POST['id'])){ #checks if the id has been set or not
+        $CheckId =  (int)$_POST['id'];
+        Track($Fname ,$CheckId);
     }
 ?>
 
 <?php
-    function Report($b, $i){ #fot testing for now no more
+    function Track($Fname, $CheckId){ #informing the proccess with the wanted process to be tracked
+        $count = $CheckId * 2; #the number of elemnts supposed to be in the array before target element appears
+        $r = Process($Fname, $count, $count - 2); #count-2 stands for the start head of the wanted process
+        Report($r, $CheckId - 1);
+        if($r) #im not sure if i need this until now i will check later
+            die;
+            
+    }
+?>
+
+<?php
+    function Report($b, $i){ #for testing for now no more
         $Proccesses = array("Connection", "Login", "Token", "Navigating", "SemestersFinding", "ObtainingData");
         $r = "";
-        if($b) $r .= "[-] ";
-        else $r .= "[+] ";
-        $r .= $Proccesses[$i];
-        echo $r."\n";
+        if($b) $r.= "0 "; #gives 0 if the process failed
+        else $r .= "1 ";#gives 0 if the process succeded 
+        $r .= $Proccesses[$i]; #adds the process info
+        echo $r;
     }
 ?>
