@@ -5,5 +5,4 @@
     else
         pclose(popen('start /B python3 ../python/Scrapper.py '.$_POST['user']. ' '. $_POST["pass"].
         ' > '.$Fname, "r"));
-    echo "[+] Submit\n";
 ?>
