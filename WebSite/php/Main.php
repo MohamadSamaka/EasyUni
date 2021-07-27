@@ -1,5 +1,4 @@
 <?php
+    $Fname = "Output.text";
     require('ScriptExecutor.php');
-    require('Processes.php');
-    require('ProcessTracker.php');
 ?>
