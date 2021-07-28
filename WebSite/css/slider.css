@@ -49,17 +49,3 @@ body::after{
     from{height:50%}
     to{height:0%}
 }
-
-#report{
-    position: relative;
-    z-index: 1;
-    color: whitesmoke;
-     height:100vh;
-     display: none;
-}
-#report p{
-    position: absolute;  
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
