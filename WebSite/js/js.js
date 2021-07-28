@@ -32,7 +32,6 @@ async function ProccessesTracker(){
         try{
             Report.innerText = "Trying To " + process[i - 1];
             var response = await RequestsMaker();
-            console.log(response[1] + ':');
             if(!Boolean(parseInt(response[0]))){
                 DisableSlider();
                 if (i == 2)
@@ -56,7 +55,6 @@ function RequestsMaker() {
         xhr.open("POST","ProcessTracker.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onload=function(){
-            console.log("------------------------------");
             var result = this.responseText.trim().split('|');
             resolve(result);
         }
