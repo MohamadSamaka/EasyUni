@@ -20,11 +20,6 @@ function Submit(e){
     var xhr = new XMLHttpRequest();
     xhr.open("POST","Main.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onload=function(){
-        console.log("------------------------------");
-        console.log("SubmitFunction:")
-        console.log(this.responseText);
-    }
     xhr.send(parms);
 
     ProccessesTracker();
@@ -43,6 +38,7 @@ async function ProccessesTracker(){
                 if (i == 2)
                     alert("LogginFailed");
                 ReportWrapper.style.display = "none";
+                break;
             }
             else{
                 ReportWrapper.style.display = "block";
