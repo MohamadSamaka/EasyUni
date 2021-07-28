@@ -23,11 +23,11 @@
 ?>
 
 <?php
-    function Report($b, $i){ #for testing for now no more
-        $Proccesses = array("Connection", "Login", "Token", "Navigating", "SemestersFinding", "ObtainingData");
+    function Report($b, $i){ #sends the result of prcoess
+        $Proccesses = array("Connected", "Loged In", "Got The Token", "Navigated", "Found The Semesters", "Data Has Been Obtained");
         $r = "";
-        if($b) $r.= "0 "; #gives 0 if the process failed
-        else $r .= "1 ";#gives 0 if the process succeded 
+        if($b) $r.= "0|"; #gives 0 if the process failed
+        else $r .= "1|";#gives 0 if the process succeded 
         $r .= $Proccesses[$i]; #adds the process info
         echo $r;
     }
