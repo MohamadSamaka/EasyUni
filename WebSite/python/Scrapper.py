@@ -1,3 +1,4 @@
+import json
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -13,11 +14,18 @@ import platform
 def Report(R):
     print(R, end = "", flush = True)
 
+
+def Replacer(sentence): #remvoes the \n from the text and replaces the word electronic with -1
+    return sentence.replace("Electronic", "-1").replace("\n", "")
+
+
 class Scrapper:
     def __init__(self):
         self.SemesterLabels = []
         self.SemestersData = []
+        self.JsonDataContainer = []
         self.token = "0"
+        self.json = None
         options = Options()
         options.add_argument("--remote-debugging-port=9222")
         self.driver = None
@@ -79,6 +87,7 @@ class Scrapper:
     def GetInfoFromSemesterTable(self):
         try:
             for i in range(1, len(self.SemesterLabels)):
+                ScheduleRows = [] # stores all the rows of the schedule
                 #gets the schedual's labels buttons VVVVVVV
                 SemesterBtn = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#contents\:semesters_items"))).find_elements_by_tag_name("li")[i]
                 self.driver.execute_script("arguments[0].click()", SemesterBtn)# clicks on the button, used this way cuz the elements are invisible
@@ -88,17 +97,26 @@ class Scrapper:
                 #extracts the rows of data
                 SemesterDataRows = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/form/div/div/div[2]/div/div/div[1]/div[2]/table/tbody"))).find_elements_by_tag_name("tr")
                 for PieceOfData in SemesterDataRows: #loops through these rows
-                    TempSemesterData = []
+                    DataRow = []
                     for RawDataContainer in PieceOfData.find_elements_by_tag_name("td")[:-2]:#loops through these pieces of data but ignores the last 2
-                        TempSemesterData.append(RawDataContainer.find_elements_by_class_name("ui-widget")[0]
-                        .get_attribute("innerHTML")) #extracts the raw data from the label
-                    self.SemestersData.append(TempSemesterData) #appends all the raw data to array
+                        #extracts the raw data from the label and removes the \n from it VVVVV
+                        RawData = RawDataContainer.find_elements_by_class_name("ui-widget")[0].get_attribute("innerHTML")
+                        RawData = Replacer(RawData)
+                        DataRow.append(RawData) #appends it to the current row
+                    DataRow[0],DataRow[1] = DataRow[1],DataRow[0] #swaps first element with the second one
+                    ScheduleRows.append(DataRow) #appends all the raw data to array
+                self.SemestersData.append(ScheduleRows) 
         except StaleElementReferenceException:
             Report("|-|")
             self.driver.quit()
             sys.exit()
-        # pprint.PrettyPrinter(indent=4).pprint(self.SemestersData)      
 
+        
+    def JsonMaker(self):
+        self.jsonDataContainer = {self.SemesterLabels[i]: self.SemestersData[i] for i in range (len(self.SemestersData))}
+        self.json = json.dumps(self.jsonDataContainer, ensure_ascii = False)
+        with open("../Data.json",'w',encoding = 'utf-8') as f:
+            f.write(self.json)
 
 
 if __name__=='__main__':
@@ -122,5 +140,6 @@ if __name__=='__main__':
     Report("$Collecting the data")
     scrapper.GetInfoFromSemesterTable()
     Report("|+|") #Got the data of each one of your scheduals
-    Report("DONE")
+    scrapper.JsonMaker()
+    Report("DONE")   
     scrapper.driver.quit()
