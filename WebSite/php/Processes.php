@@ -3,7 +3,7 @@
     function Process($F, $count, $StartIndex){ #bool function
         $info = array();
         while(true){ #keeps looping until it gets the process and its result
-            $info = array_filter(explode("|",file_get_contents($F)));
+            $info = array_filter(explode("|",file_get_contents("../".$F)));
              if(count($info) >= $count)
                 return PassedOrNot($info, $StartIndex);
             }
