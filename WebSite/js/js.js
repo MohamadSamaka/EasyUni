@@ -1,3 +1,4 @@
+var AnimatedBackground = document.querySelector("body > div.animation-area");
 var LayoutWrapper = document.querySelector("#layout-wrapper");
 var Form = document.querySelector("#login-form-wrapper > form");
 var Body = document.querySelector("body");
@@ -18,7 +19,7 @@ function Submit(e){
     var pass = document.querySelector("#pass").value;
     var parms = `user=${user}&pass=${pass}`
     var xhr = new XMLHttpRequest();
-    xhr.open("POST","Main.php", true);
+    xhr.open("POST","..\\Php\\Main.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.send(parms);
 
@@ -33,15 +34,17 @@ async function ProccessesTracker(){
             Report.innerText = "Trying To " + process[i - 1];
             var response = await RequestsMaker();
             if(!Boolean(parseInt(response[0]))){
-                DisableSlider();
-                if (i == 2)
-                    alert("LogginFailed");
-                ReportWrapper.style.display = "none";
+                RedirectToLoginPage();
                 break;
             }
             else{
                 ReportWrapper.style.display = "block";
                 Report.innerText = response[1];
+            }
+            if(i == 6){
+                // AppendPage()
+                PrepareInfoPage();
+                
             }
         }catch(err){
             console.log(err);
@@ -52,7 +55,7 @@ async function ProccessesTracker(){
 function RequestsMaker() {
     return new Promise((resolve, reject) => {
         var xhr = new XMLHttpRequest();
-        xhr.open("POST","ProcessTracker.php", true);
+        xhr.open("POST","../php/ProcessTracker.php", true);
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhr.onload=function(){
             var result = this.responseText.trim().split('|');
@@ -61,6 +64,15 @@ function RequestsMaker() {
         xhr.send(`id=${i}`);
     })
 }
+
+
+function RedirectToLoginPage() {
+    DisableSlider();
+    if (i == 2)
+        alert("LogginFailed");
+    ReportWrapper.style.display = "none";
+}
+
 
 function EnableSlider(){
     if(Body.classList.contains("disable-slider"))
@@ -72,4 +84,9 @@ function DisableSlider(){
     if(Body.classList.contains("enable-slider"))
         Body.classList.remove("enable-slider");
     Body.classList.add("disable-slider");
+}
+
+function DeleteLoginPageElements(){
+    // AnimatedBackground.remove();
+    LayoutWrapper.remove();
 }
