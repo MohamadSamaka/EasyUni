@@ -1,10 +1,15 @@
 var JsonData;
 var ArTableHeader = ["المبنى", "قاعة", "المحاضر", "الوقت", "الشعبة", "عدد الساعات المعتمدة", "النشاط",  "رمز المقرر", "اسم المقرر"];
-var EnTableHeader = ["Course Name", "Course Code", "Activity", "Confirmed Hours", "Section", "Time",  "Instructor", "Room", "Building"]
-var SelectElement;
-var SelectedSemester;//= document.getElementById('slct');
-                     //select.options[select.selectedIndex].text
-function sleep(ms) {
+var EnTableHeader = ["Course Name", "Course Code", "Activity", "Confirmed Hours", "Section", "Time",  "Instructor", "Room", "Building"];
+var WholeDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+// var CurrentSemesterDays;
+var SelectedDay;
+var SelectedSemesterElement;
+var SelectedSemesterName;
+var InsertedBefore = false;
+var lang = "ar";
+var SemesterDaysCount;
+function sleep(ms) { 
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
@@ -12,12 +17,12 @@ function sleep(ms) {
 async function PrepareInfoPage() {
     AppendPage();
     FetchData();
-    await sleep(2000);
+    await sleep(2000); // i have to wait idk why, it looks like that the dom isn't fully loaded imma search on this later
     CreateAppendTable();
     GetElements();
     CreateOptions();
     AddListeners();
-    TableInserter();
+    // TableInserter();
     DeleteLoginPageElements();
     DisableSlider();
     ReportWrapper.style.display = "none";
@@ -77,35 +82,6 @@ function CreateAppendTable() {
 
 
 
-function TableInserter(){
-    var v = 0;
-    console.log(document.querySelector("body > table > tbody"))
-    var name = Object.keys(JsonData)[0]; //temporary test, working on 1 semester not more
-    var length = Object.keys(JsonData[name]).length; //gets the number of how many rows needed
-    var rows;
-    [...Array(length).keys()].forEach(num => { // makes the rows
-        document.querySelector("body > table > tbody").insertRow();
-    });
-    rows = document.querySelectorAll("body > table > tbody > tr"); //gets all the made rows
-    var days = Object.keys(JsonData[name]) //gets the days
-    JsonData[name][days[0]].forEach(course => {
-                course.forEach(PieceOfData => {
-                    rows[v].insertCell(0).innerText = PieceOfData;
-                });
-                v++;
-           });
-    // rows.forEach(row => {
-    //     days.forEach(day => {
-    //     JsonData[name][day].forEach(course => {
-    //         course.forEach(PieceOfData => {
-    //             row.insertCell(-1).innerText = PieceOfData;
-    //         });
-    //    });
-    // });
-    // });
-}
-
-
 function GetElements() {
     SelectElement = document.getElementById('slct');
 }
@@ -121,14 +97,85 @@ function CreateOptions(){
 
 
 function AddListeners(){
-    SelectElement.addEventListener('change',GetSelectedText)
+    SelectElement.addEventListener('change',GetSelectedSemester)
 }
 
 
-function GetSelectedText(){
-    SelectedSemester = SelectElement.options[SelectElement.selectedIndex].text;
+function GetSelectedSemester(){
+    RemoveTableChildrens();
+    SelectedSemesterName = SelectElement.options[SelectElement.selectedIndex].text;
+    SemesterDaysCount = Object.keys(JsonData[SelectedSemesterName]).length; //gets the number of how many rows needed
+    // TableInserter(SelectedSemester);
+    CreateButtons();
+}
+
+
+function RemoveTableChildrens(){
+    var childs = document.querySelector("body > table > tbody").children;
+    var l = childs.length ;
+    if ( l != 0){
+        for(var i = 0; i < l; i++)
+            childs[0].remove();
+        // childs.forEach(child => { #this gives an error idk why
+        //     child.remove();
+        // });
+    }
+}
+
+
+function TableInserter(d){
+    SelectedDay = WholeDays[parseInt(this.value)];
+    TableBodyReplacer();
+    var v = 0;
+    var rows;
+    rows = document.querySelectorAll("body > table > tbody > tr"); //gets all the made rows
+    // var days = Object.keys(JsonData[SelectedSemesterName]) //gets the days
+    JsonData[SelectedSemesterName][SelectedDay].forEach(course => {
+                course.forEach(PieceOfData => {
+                    if(PieceOfData == "-1")
+                        rows[v].insertCell(0).innerText = "وهمي";
+                    else
+                        rows[v].insertCell(0).innerText = PieceOfData;
+                });
+        v++;
+    });
+}
+
+
+function TableBodyReplacer(){
+    var new_tbody = document.createElement('tbody');
+    RowsMaker(new_tbody);
+    old_tbody = document.querySelector("body > table > tbody");
+    old_tbody.parentNode.replaceChild(new_tbody, old_tbody);
+}
+
+function RowsMaker(tbody){ // makes the rows
+    for (var i = 0; i < JsonData[SelectedSemesterName][SelectedDay].length; i++)
+        tbody.insertRow();
 }
 
 
 
+
+function CreateButtons(){
+    previous_btns = document.getElementById("days")
+    if( previous_btns != null)
+        previous_btns.remove();
+
+    var DayButtonsContainer = document.createElement('div');
+    DayButtonsContainer.id = "days";
+    let o = new Intl.DateTimeFormat(lang , {
+        weekday: "long"
+      });
+      
+    for(var i = 0; i < SemesterDaysCount; i++){
+        btn = document.createElement('button');
+        var d = WholeDays.indexOf(Object.keys(JsonData[SelectedSemesterName])[i])
+        btn.innerText = o.format(Date.UTC(2020,10,d + 1));
+        btn.value = d;
+        btn.addEventListener('click', TableInserter);
+        DayButtonsContainer.appendChild(btn);
+    }
+    document.body.appendChild(DayButtonsContainer)
+}
 
