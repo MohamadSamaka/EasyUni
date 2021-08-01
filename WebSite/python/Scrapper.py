@@ -15,8 +15,8 @@ def Report(R):
     print(R, end = "", flush = True)
 
 
-def Replacer(sentence): #remvoes the \n from the text and replaces the word electronic with -1
-    return sentence.replace("Electronic", "-1").replace("\n", "")
+def Replacer(sentence): #remvoes the \n from the text and replaces the word electronic with -1 and &nbsp;
+    return sentence.replace("Electronic", "-1").replace("\n", "").replace("&nbsp;", " ")
 
 
 class Scrapper:
@@ -86,7 +86,7 @@ class Scrapper:
 
     def GetInfoFromSemesterTable(self):
         try:
-            for i in range(1, len(self.SemesterLabels)):
+            for i in range(1, len(self.SemesterLabels) + 1): #ignores the "please select"(starts counting from 1 not from 0) option but this gonna cause ignoring 1 semester so you add 1
                 ScheduleRows = [] # stores all the rows of the schedule
                 #gets the schedual's labels buttons VVVVVVV
                 SemesterBtn = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#contents\:semesters_items"))).find_elements_by_tag_name("li")[i]
