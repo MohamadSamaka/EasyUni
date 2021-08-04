@@ -9,6 +9,10 @@ var SelectedSemesterName;
 var InsertedBefore = false;
 var lang = "ar";
 var SemesterDaysCount;
+var InfoDiv;
+var SubInfoDiv;
+var Tbody;
+
 function sleep(ms) { 
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -16,6 +20,10 @@ function sleep(ms) {
 
 async function PrepareInfoPage() {
     AppendPage();
+    await sleep(2000); // i have to wait idk why, it looks like that the dom isn't fully loaded imma search on this later
+
+    InfoDiv = document.getElementById("info");
+    SubInfoDiv = document.getElementById("selectors");
     FetchData();
     await sleep(2000); // i have to wait idk why, it looks like that the dom isn't fully loaded imma search on this later
     CreateAppendTable();
@@ -75,9 +83,10 @@ function CreateAppendTable() {
     ArTableHeader.forEach(th => {
         row.appendChild(document.createElement('th')).innerText=th;
     });
-
-    Table.appendChild(document.createElement('tbody'))
-    document.body.appendChild(Table);
+    Tbody = document.createElement('tbody');
+    Tbody.id = "data-table";
+    Table.appendChild(Tbody)
+    InfoDiv.appendChild(Table);
 }
 
 
@@ -111,14 +120,11 @@ function GetSelectedSemester(){
 
 
 function RemoveTableChildrens(){
-    var childs = document.querySelector("body > table > tbody").children;
+    var childs = document.getElementById("data-table").children;
     var l = childs.length ;
     if ( l != 0){
         for(var i = 0; i < l; i++)
             childs[0].remove();
-        // childs.forEach(child => { #this gives an error idk why
-        //     child.remove();
-        // });
     }
 }
 
@@ -128,7 +134,7 @@ function TableInserter(d){
     TableBodyReplacer();
     var v = 0;
     var rows;
-    rows = document.querySelectorAll("body > table > tbody > tr"); //gets all the made rows
+    rows = document.getElementById("data-table").children //gets all the made rows
     // var days = Object.keys(JsonData[SelectedSemesterName]) //gets the days
     JsonData[SelectedSemesterName][SelectedDay].forEach(course => {
                 course.forEach(PieceOfData => {
@@ -144,8 +150,9 @@ function TableInserter(d){
 
 function TableBodyReplacer(){
     var new_tbody = document.createElement('tbody');
+    new_tbody.id = "data-table";
     RowsMaker(new_tbody);
-    old_tbody = document.querySelector("body > table > tbody");
+    old_tbody = document.getElementById("data-table");
     old_tbody.parentNode.replaceChild(new_tbody, old_tbody);
 }
 
@@ -173,9 +180,10 @@ function CreateButtons(){
         var d = WholeDays.indexOf(Object.keys(JsonData[SelectedSemesterName])[i])
         btn.innerText = o.format(Date.UTC(2020,10,d + 1));
         btn.value = d;
+        btn.classList.add("ribbon-btn");
         btn.addEventListener('click', TableInserter);
         DayButtonsContainer.appendChild(btn);
     }
-    document.body.appendChild(DayButtonsContainer)
+    SubInfoDiv.appendChild(DayButtonsContainer)
 }
 
