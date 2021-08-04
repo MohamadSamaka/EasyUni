@@ -8,12 +8,12 @@
 }
 
 .animation-area {
-	position:absolute;
+	position:fixed;
 	z-index: -1;
 	/* background: linear-gradient(to left, #8942a8, #ba382f); */
     background: linear-gradient(to left, #F2AF29, #ba382f);
 	width: 100%;
-	height: 100vh;
+	height: 100%;
 }
 .box-area {
 	position: absolute;
