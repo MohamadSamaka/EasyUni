@@ -19,7 +19,7 @@ function Submit(e){
     var pass = document.querySelector("#pass").value;
     var parms = `user=${user}&pass=${pass}`
     var xhr = new XMLHttpRequest();
-    xhr.open("POST","..\\Php\\Main.php", true);
+    xhr.open("POST","../php/Main.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.send(parms);
 
