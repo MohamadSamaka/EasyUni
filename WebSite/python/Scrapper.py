@@ -67,7 +67,7 @@ class Scrapper:
 
     def GetToken(self): #getting the user's token
         #getting the url which has the token in it at the end vvvvv
-        href = WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.ID, "menu-form:j_idt69"))).find_element_by_tag_name("a").get_attribute("href")
+        href = WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.ID, "menu-form:j_idt83"))).find_element_by_tag_name("a").get_attribute("href")
         self.token = href.partition("Token=")[2] #extracting the token from that url
     
 
