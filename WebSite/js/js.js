@@ -6,7 +6,10 @@ var ReportWrapper = document.getElementById("report");
 var Report = document.querySelector("#report > div > span:nth-child(1)");
 var i;
 
-Form.addEventListener("submit", Submit);
+$(document).ready(function() {
+	Form.addEventListener("submit", Submit);
+});
+
 
 function Submit(e){
     e.preventDefault();
