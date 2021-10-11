@@ -27,6 +27,7 @@ class Scrapper:
         self.token = "0"
         self.json = None
         options = Options()
+        options.headless = True
         options.add_argument("--remote-debugging-port=9222")
         self.driver = None
         #self.driver = webdriver.Chrome()
@@ -67,21 +68,36 @@ class Scrapper:
 
     def GetToken(self): #getting the user's token
         #getting the url which has the token in it at the end vvvvv
-        href = WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.ID, "menu-form:j_idt83"))).find_element_by_tag_name("a").get_attribute("href")
-        self.token = href.partition("Token=")[2] #extracting the token from that url
+        try:
+            href = WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.ID, "menu-form:j_idt69"))).find_element_by_tag_name("a").get_attribute("href")
+            self.token = href.partition("Token=")[2] #extracting the token from that url
+        except TimeoutException:
+            Report("|-|")
+            self.driver.quit()
+            sys.exit()
     
 
     def NavigateToScheduale(self): #navigating to the schedual site
         #this is the default url which directs you to your schedual vvvvvv
-        url = "https://portal.aaup.edu/faces/ui/pages/student/schedule/index.xhtml?javax.faces.Token="
-        self.driver.get(url + self.token) # adding the token and getting to the site
+        try:
+            url = "https://portal.aaup.edu/faces/ui/pages/student/schedule/index.xhtml?javax.faces.Token="
+            self.driver.get(url + self.token) # adding the token and getting to the site
+        except:
+            Report("|-|")
+            self.driver.quit()
+            sys.exit()
 
 
     def GetSemestersLabels(self): #Getting all related schedual info
-        #geting the options 
-        SemestersLi = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents:semesters_items"]'))).find_elements_by_tag_name("li")
-        for li in SemestersLi[1:]: #loops in the options + excluding the first useless option
-            self.SemesterLabels.append(li.get_attribute("innerHTML"))
+        #geting the options
+        try:
+            SemestersLi = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.XPATH, '//*[@id="contents:semesters_items"]'))).find_elements_by_tag_name("li")
+            for li in SemestersLi[1:]: #loops in the options + excluding the first useless option
+                self.SemesterLabels.append(li.get_attribute("innerHTML"))
+        except TimeoutException:
+            Report("|-|")
+            self.driver.quit()
+            sys.exit()
 
 
     def GetInfoFromSemesterTable(self):
@@ -113,10 +129,15 @@ class Scrapper:
 
         
     def JsonMaker(self):
-        self.jsonDataContainer = {self.SemesterLabels[i]: self.SemestersData[i] for i in range (len(self.SemestersData))}
-        self.json = json.dumps(self.jsonDataContainer, ensure_ascii = False)
-        with open("../Data.json",'w',encoding = 'utf-8') as f:
-            f.write(self.json)
+        try:
+            self.jsonDataContainer = {self.SemesterLabels[i]: self.SemestersData[i] for i in range (len(self.SemestersData))}
+            self.json = json.dumps(self.jsonDataContainer, ensure_ascii = False)
+            with open("../Data.json",'w',encoding = 'utf-8') as f:
+                f.write(self.json)
+        except:
+            Report("|-|")
+            self.driver.quit()
+            sys.exit()
 
 
 if __name__=='__main__':
