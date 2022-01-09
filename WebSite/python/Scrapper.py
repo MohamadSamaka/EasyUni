@@ -27,7 +27,7 @@ class Scrapper:
         self.token = "0"
         self.json = None
         options = Options()
-        options.headless = False
+        options.headless = True
         options.add_argument("--remote-debugging-port=9230")
         self.driver = None
         #self.driver = webdriver.Chrome()
@@ -69,7 +69,8 @@ class Scrapper:
     def GetToken(self): #getting the user's token
         #getting the url which has the token in it at the end vvvvv
         try:
-            href = WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.ID, "menu-form:j_idt69"))).find_element_by_tag_name("a").get_attribute("href")
+            xpath = "/html/body/div[1]/div[2]/div/div/div[1]/div[2]/div/div[1]/form/ul/li[5]/ul/li[1]"
+            href = WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.XPATH, xpath))).find_element_by_tag_name("a").get_attribute("href")
             self.token = href.partition("Token=")[2] #extracting the token from that url
         except TimeoutException:
             Report("|-|")
