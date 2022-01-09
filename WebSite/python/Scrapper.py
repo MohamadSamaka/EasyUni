@@ -27,12 +27,12 @@ class Scrapper:
         self.token = "0"
         self.json = None
         options = Options()
-        options.headless = True
-        options.add_argument("--remote-debugging-port=9222")
+        options.headless = False
+        options.add_argument("--remote-debugging-port=9230")
         self.driver = None
         #self.driver = webdriver.Chrome()
         if platform.system() == "Windows":
-            self.driver = webdriver.Chrome("..\..\Attachments\chromedriver.exe", options=options)#moved to windows this  is needed to work
+            self.driver = webdriver.Chrome(executable_path="..\..\Attachments\chromedriver.exe", options=options)#moved to windows this  is needed to work
         else:
             self.driver = webdriver.Chrome("../../Attachments/chromedriver", options=options)
         #limiting the network speed to check if it works for slow internet users vvvvvvv
