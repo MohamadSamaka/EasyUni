@@ -1,15 +1,17 @@
-import json
+import chromedriver_autoinstaller
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException,StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException,StaleElementReferenceException, SessionNotCreatedException 
+import json
 import time
 import sys
-import pprint
 import platform
+from shutil import move
+import os
 
 def Report(R):
     print(R, end = "", flush = True)
@@ -26,27 +28,51 @@ class Scrapper:
         self.JsonDataContainer = []
         self.token = "0"
         self.json = None
+        self.LinkAndCheckDriverCompatibility()
+       
+
+    def LinkAndCheckDriverCompatibility(self):
         options = Options()
         options.headless = True
         options.add_argument("--remote-debugging-port=9230")
         self.driver = None
-        #self.driver = webdriver.Chrome()
-        if platform.system() == "Windows":
-            self.driver = webdriver.Chrome(executable_path="..\..\Attachments\chromedriver.exe", options=options)#moved to windows this  is needed to work
-        else:
-            self.driver = webdriver.Chrome("../../Attachments/chromedriver", options=options)
-        #limiting the network speed to check if it works for slow internet users vvvvvvv
-        # self.driver.set_network_conditions(
-        # offline=False,
-        # latency=5,  # additional latency (ms)
-        # download_throughput=100 * 1024,  # maximal throughput
-        # upload_throughput=100 * 1024)  # maximal throughput
+        # while self.driver is None:
+        try:
+            if platform.system() == "Windows":
+                self.platform = 1
+                self.driver = webdriver.Chrome(executable_path="..\..\Attachments\chromedriver.exe", options=options)#moved to windows this  is needed to work
+            else:
+                self.platform = 0
+                self.driver = webdriver.Chrome("../../Attachments/chromedriver", options=options)
+        except SessionNotCreatedException:
+            print("bad version")
+            self.WebdriverUpdater()
         try:
             self.driver.get("https://portal.aaup.edu/faces/ui/login.xhtml")
         except:
             Report("|-|")
             self.driver.quit()
             sys.exit()
+
+    def WebdriverUpdater(self):
+        chromedriver_autoinstaller.install(path="../../Attachments")
+        for it in os.scandir("../../Attachments"):
+            if it.is_dir():
+                downloadedFilePath = os.path.abspath(os.path.join(it.path, os.listdir(it.path)[0]))
+                fname = "chromedriver.exe" if self.platform else "chromedriver"
+                if os.path.exists(f"../../Attachments/{fname}"):
+                    os.remove(f"../../Attachments/{fname}")
+                move(downloadedFilePath, "../../Attachments")
+                os.rmdir(it.path)
+        
+
+    def LimitSpeed(self): #limiting the network speed for testing purposes
+        self.driver.set_network_conditions(
+        offline=False,
+        latency=5,  # additional latency (ms)
+        download_throughput=100 * 1024,  # maximal throughput
+        upload_throughput=100 * 1024)  # maximal throughput
+        
 
 
     def Login(self, username, password):
@@ -139,6 +165,19 @@ class Scrapper:
             Report("|-|")
             self.driver.quit()
             sys.exit()
+
+
+def extract_version(output):
+    try:
+        google_version = ''
+        for letter in output[output.rindex('DisplayVersion    REG_SZ') + 24:]:
+            if letter != '\n':
+                google_version += letter
+            else:
+                break
+        return(google_version.strip())
+    except TypeError:
+        return
 
 
 if __name__=='__main__':
