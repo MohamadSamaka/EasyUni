@@ -30,7 +30,6 @@ async function PrepareInfoPage() {
     GetElements();
     CreateOptions();
     AddListeners();
-    // TableInserter();
     DeleteLoginPageElements();
     DisableSlider();
     ReportWrapper.style.display = "none";
@@ -114,7 +113,6 @@ function GetSelectedSemester(){
     RemoveTableChildrens();
     SelectedSemesterName = SelectElement.options[SelectElement.selectedIndex].text;
     SemesterDaysCount = Object.keys(JsonData[SelectedSemesterName]).length; //gets the number of how many rows needed
-    // TableInserter(SelectedSemester);
     CreateButtons();
 }
 
